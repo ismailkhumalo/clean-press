@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanPress - Laundry Service Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .portal-container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .portal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 50px 40px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 450px;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-20px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .portal-card.customer {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        }
+
+        .portal-card.admin {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
+        }
+
+        .portal-icon {
+            font-size: 100px;
+            margin-bottom: 30px;
+            transition: transform 0.3s;
+        }
+
+        .portal-card:hover .portal-icon {
+            transform: scale(1.2);
+        }
+
+        .portal-card h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .portal-card p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 300px;
+        }
+
+        .features {
+            text-align: left;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .feature-item::before {
+            content: '✓';
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+            background: #f8f9fa;
+        }
+
+        .btn.customer-btn {
+            color: #667eea;
+        }
+
+        .btn.admin-btn {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .btn.admin-btn:hover {
+            background: #34495e;
+        }
+
+        .security-note {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .security-note::before {
+            content: '🔒';
+            font-size: 1.2em;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .quick-access {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quick-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Admin Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            padding: 50px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .modal-header h2 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-3px);
+        }
+
+        .modal-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .close-modal:hover {
+            opacity: 1;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            opacity: 0.7;
+            font-size: 1.2em;
+        }
+
+        .toggle-btn:hover {
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .portal-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .portal-card {
+                padding: 40px 30px;
+                min-height: 400px;
+            }
+
+            .portal-icon {
+                font-size: 80px;
+            }
+
+            .portal-card h2 {
+                font-size: 2em;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .modal-content {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Animation for page load */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Loading animation */
+        .loader {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="portal-container">
+        <div class="header">
+            <h1>
+                <span class="floating">🧺</span>
+                <span>CleanPress</span>
+                <span class="floating" style="animation-delay: 0.5s;">✨</span>
+            </h1>
+            <p>Professional Laundry Service Management System</p>
+        </div>
+
+        <div class="portal-grid">
+            <!-- Customer Portal -->
+            <div class="portal-card customer" onclick="goToCustomer()">
+                <div class="portal-icon">👤</div>
+                <h2>Customer Portal</h2>
+                <p>Book laundry services, track orders, and manage your account</p>
+                
+                <div class="features">
+                    <div class="feature-item">Book laundry pickup & delivery</div>
+                    <div class="feature-item">Track order in real-time</div>
+                    <div class="feature-item">Manage laundry preferences</div>
+                    <div class="feature-item">View order history & receipts</div>
+                    <div class="feature-item">Rate & review services</div>
+                </div>
+
+                <a href="customer.html" class="btn customer-btn">
+                    <span>Enter as Customer</span>
+                    <span>→</span>
+                </a>
+            </div>
+
+            <!-- Admin Portal -->
+            <div class="portal-card admin" onclick="openAdminLogin()">
+                <div class="portal-icon">👨‍💼</div>
+                <h2>Admin Portal</h2>
+                <p>Manage operations, monitor orders, and oversee business analytics</p>
+                
+                <div class="features">
+                    <div class="feature-item">Manage orders & drivers</div>
+                    <div class="feature-item">Monitor facility operations</div>
+                    <div class="feature-item">View business analytics</div>
+                    <div class="feature-item">Manage inventory & staff</div>
+                    <div class="feature-item">Generate reports & insights</div>
+                </div>
+
+                <button class="btn admin-btn" onclick="openAdminLogin()">
+                    <span>Admin Login</span>
+                    <span>🔐</span>
+                </button>
+                
+                <div class="security-note">
+                    Secure access required
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Access Links -->
+        <div class="quick-access">
+            <a href="#about" class="quick-link">
+                <span>ℹ️</span>
+                <span>About CleanPress</span>
+            </a>
+            <a href="#services" class="quick-link">
+                <span>🧺</span>
+                <span>Our Services</span>
+            </a>
+            <a href="#contact" class="quick-link">
+                <span>📞</span>
+                <span>Contact Support</span>
+            </a>
+            <a href="#demo" class="quick-link">
+                <span>🎬</span>
+                <span>View Demo</span>
+            </a>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="ordersCount">0</div>
+                <div class="stat-label">Orders Today</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="customersCount">0</div>
+                <div class="stat-label">Happy Customers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="deliveryTime">0</div>
+                <div class="stat-label">Avg Delivery Time (hrs)</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="rating">0.0</div>
+                <div class="stat-label">Customer Rating</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 CleanPress Laundry Service. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8em;">
+                Need help? Call us at <strong>1-800-CLEAN-PRESS</strong> or email <strong>support@cleanpress.com</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeAdminLogin()">×</button>
+            <div class="modal-header">
+                <h2><span>🔐</span> Admin Login</h2>
+                <p>Enter your credentials to access the admin dashboard</p>
+            </div>
+
+            <div class="form-group">
+                <label for="adminEmail">Email Address</label>
+                <input type="email" id="adminEmail" class="form-control" placeholder="admin@cleanpress.com">
+            </div>
+
+            <div class="form-group password-toggle">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" class="form-control" placeholder="••••••••">
+                <button class="toggle-btn" onclick="togglePassword()">👁️</button>
+            </div>
+
+            <div class="form-group">
+                <label for="adminCode">Security Code (Optional)</label>
+                <input type="text" id="adminCode" class="form-control" placeholder="Enter 6-digit code if enabled">
+            </div>
+
+            <div class="loader" id="loginLoader"></div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="closeAdminLogin()">Cancel</button>
+                <button class="modal-btn primary" onclick="loginToAdmin()">Login to Admin</button>
+            </div>
+
+            <div style="margin-top: 25px; text-align: center; font-size: 0.9em; opacity: 0.7;">
+                <p>For security, admin access is restricted to authorized personnel only.</p>
+                <p style="margin-top: 10px;">🔒 All login attempts are logged</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animated counters for stats
+        function animateCounter(elementId, targetValue, suffix = '') {
+            const element = document.getElementById(elementId);
+            let current = 0;
+            const increment = targetValue / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= targetValue) {
+                    current = targetValue;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.round(current) + suffix;
+            }, 30);
+        }
+
+        // Initialize stats
+        setTimeout(() => {
+            animateCounter('ordersCount', 47);
+            animateCounter('customersCount', 1234, '+');
+            animateCounter('deliveryTime', 4.5);
+            animateCounter('rating', 4.8);
+        }, 1000);
+
+        // Modal functions
+        function openAdminLogin() {
+            document.getElementById('adminModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Clear form
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminCode').value = '';
+        }
+
+        function togglePassword() {
+            const passwordField = document.getElementById('adminPassword');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.textContent = '👁️‍🗨️';
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        function goToCustomer() {
+            // Add smooth transition effect
+            document.body.style.opacity = '0.8';
+            document.body.style.transition = 'opacity 0.3s';
+            
+            setTimeout(() => {
+                window.location.href = 'customer.html';
+            }, 300);
+        }
+
+        function loginToAdmin() {
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const loader = document.getElementById('loginLoader');
+            
+            // Simple validation
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+            
+            // Show loader
+            loader.style.display = 'block';
+            
+            // Simulate login process
+            setTimeout(() => {
+                loader.style.display = 'none';
+                
+                // For demo purposes, accept any login
+                // In production, this would validate against a server
+                const demoCredentials = [
+                    'admin@cleanpress.com:admin123',
+                    'supervisor@cleanpress.com:super123',
+                    'manager@cleanpress.com:manager123'
+                ];
+                
+                const inputCredential = `${email}:${password}`;
+                
+                // Check if it's a demo credential or allow any for demo
+                if (demoCredentials.includes(inputCredential) || password === 'demo') {
+                    // Success - redirect to admin page
+                    alert('Login successful! Redirecting to admin dashboard...');
+                    window.location.href = 'admin.html';
+                } else {
+                    // Show error but allow access for demo (remove in production)
+                    const proceed = confirm('Invalid credentials. For demo purposes, click OK to proceed anyway.');
+                    if (proceed) {
+                        window.location.href = 'admin.html';
+                    }
+                }
+            }, 1500);
+        }
+
+        // Quick access link handlers
+        document.querySelectorAll('.quick-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.getAttribute('href').substring(1);
+                showQuickInfo(section);
+            });
+        });
+
+        function showQuickInfo(section) {
+            const messages = {
+                'about': 'CleanPress is a professional laundry service that combines technology with traditional cleaning methods. We serve over 10,000 customers with 98% satisfaction rate.',
+                'services': 'We offer: Wash & Fold ($15), Dry Cleaning ($25), Express Service ($35), Ironing Only ($12), Special Fabric Care, and Commercial Laundry Solutions.',
+                'contact': 'Support Hours: 8 AM - 10 PM\nPhone: 1-800-CLEAN-PRESS\nEmail: support@cleanpress.com\nLive Chat: Available on Customer Portal',
+                'demo': 'This is a demonstration system. All data shown is for preview purposes. Real system includes full order management, payment processing, and analytics.'
+            };
+            
+            if (messages[section]) {
+                alert(messages[section]);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + A for admin login
+            if (e.ctrlKey && e.key === 'a') {
+                e.preventDefault();
+                openAdminLogin();
+            }
+            // Ctrl + C for customer portal
+            if (e.ctrlKey && e.key === 'c') {
+                e.preventDefault();
+                goToCustomer();
+            }
+            // Escape to close modal
+            if (e.key === 'Escape') {
+                closeAdminLogin();
+            }
+        });
+
+        // Add some visual effects on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add floating animation to portal cards with delay
+            document.querySelectorAll('.portal-card').forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.2}s`;
+            });
+            
+            // Welcome message
+            setTimeout(() => {
+                console.log('🌟 CleanPress Portal Loaded Successfully!');
+                console.log('✨ Try these shortcuts:');
+                console.log('   Ctrl + C → Customer Portal');
+                console.log('   Ctrl + A → Admin Login');
+                console.log('   Escape  → Close Modal');
+            }, 1000);
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target === modal) {
+                closeAdminLogin();
+            }
+        };
+    </script>
+</body>
+</html>

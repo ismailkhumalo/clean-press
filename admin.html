@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanPress Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5em;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.2);
+            border-left-color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 50px;
+            width: 300px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .notification-badge {
+            position: relative;
+        }
+
+        .notification-badge::after {
+            content: '3';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-1 { background: #e3f2fd; color: #1976d2; }
+        .stat-2 { background: #f3e5f5; color: #7b1fa2; }
+        .stat-3 { background: #e8f5e9; color: #388e3c; }
+        .stat-4 { background: #fff3e0; color: #f57c00; }
+
+        .stat-info h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Charts */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Orders Table */
+        .orders-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            background: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 2px solid #eee;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-picked { background: #cce5ff; color: #004085; }
+        .status-washing { background: #d1ecf1; color: #0c5460; }
+        .status-drying { background: #d4edda; color: #155724; }
+        .status-ready { background: #d1ecf1; color: #0c5460; }
+        .status-delivering { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .btn-view { background: #17a2b8; color: white; }
+        .btn-edit { background: #28a745; color: white; }
+        .btn-cancel { background: #dc3545; color: white; }
+        .btn-process { background: #007bff; color: white; }
+
+        /* Driver Management */
+        .drivers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .driver-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .driver-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .driver-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Analytics Cards */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .analytics-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .analytics-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        /* Facility Management */
+        .facility-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .machine-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .machine-status.online::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #28a745;
+        }
+
+        .machine-status.offline::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 500px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .notif-alert { background: #f8d7da; color: #721c24; }
+        .notif-info { background: #d1ecf1; color: #0c5460; }
+        .notif-success { background: #d4edda; color: #155724; }
+
+        /* Page Content */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            .nav-item {
+                white-space: nowrap;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>🧺 CleanPress <span style="font-size: 12px; background: #667eea; padding: 2px 8px; border-radius: 10px;">ADMIN</span></h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="showPage('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" onclick="showPage('orders')">
+                    <span class="nav-icon">📋</span>
+                    <span>Orders</span>
+                </li>
+                <li class="nav-item" onclick="showPage('drivers')">
+                    <span class="nav-icon">🚗</span>
+                    <span>Drivers</span>
+                </li>
+                <li class="nav-item" onclick="showPage('facility')">
+                    <span class="nav-icon">🏭</span>
+                    <span>Facility</span>
+                </li>
+                <li class="nav-item" onclick="showPage('analytics')">
+                    <span class="nav-icon">📈</span>
+                    <span>Analytics</span>
+                </li>
+                <li class="nav-item" onclick="showPage('customers')">
+                    <span class="nav-icon">👥</span>
+                    <span>Customers</span>
+                </li>
+                <li class="nav-item" onclick="showPage('inventory')">
+                    <span class="nav-icon">📦</span>
+                    <span>Inventory</span>
+                </li>
+                <li class="nav-item" onclick="showPage('notifications')">
+                    <span class="nav-icon">🔔</span>
+                    <span>Notifications</span>
+                    <span class="notification-badge"></span>
+                </li>
+                <li class="nav-item" onclick="showPage('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Search orders, customers, drivers...">
+                </div>
+                <div class="admin-profile">
+                    <div class="notification-badge" onclick="showPage('notifications')">
+                        <span style="font-size: 24px; cursor: pointer;">🔔</span>
+                    </div>
+                    <div class="profile-img">AD</div>
+                    <div>
+                        <strong>Admin User</strong>
+                        <p style="color: #666; font-size: 14px;">Super Admin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon stat-1">📦</div>
+                        <div class="stat-info">
+                            <h3>47</h3>
+                            <p>Active Orders</p>
+                            <small style="color: #28a745;">↑ 12% from yesterday</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-2">💰</div>
+                        <div class="stat-info">
+                            <h3>$1,847</h3>
+                            <p>Today's Revenue</p>
+                            <small style="color: #28a745;">↑ 8% from yesterday</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-3">👥</div>
+                        <div class="stat-info">
+                            <h3>324</h3>
+                            <p>Active Customers</p>
+                            <small style="color: #28a745;">↑ 5 new today</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-4">🚗</div>
+                        <div class="stat-info">
+                            <h3>8/12</h3>
+                            <p>Drivers Active</p>
+                            <small style="color: #e74c3c;">4 on break</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Order Trends</h3>
+                        <canvas id="ordersChart" height="250"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Service Distribution</h3>
+                        <canvas id="serviceChart" height="250"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="table-header">
+                        <h3>Recent Orders</h3>
+                        <button class="action-btn btn-view" onclick="showPage('orders')">View All</button>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#LP2024-00156</td>
+                                    <td>John Smith</td>
+                                    <td>Express</td>
+                                    <td><span class="status-badge status-delivering">Delivering</span></td>
+                                    <td>$35.00</td>
+                                    <td>
+                                        <button class="action-btn btn-view" onclick="viewOrder('LP2024-00156')">Track</button>
+                                        <button class="action-btn btn-edit" onclick="updateStatus('LP2024-00156')">Update</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#LP2024-00155</td>
+                                    <td>Sarah Johnson</td>
+                                    <td>Wash & Fold</td>
+                                    <td><span class="status-badge status-washing">Washing</span></td>
+                                    <td>$15.00</td>
+                                    <td>
+                                        <button class="action-btn btn-view" onclick="viewOrder('LP2024-00155')">Track</button>
+                                        <button class="action-btn btn-process" onclick="processOrder('LP2024-00155')">Process</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#LP2024-00154</td>
+                                    <td>Mike Wilson</td>
+                                    <td>Dry Clean</td>
+                                    <td><span class="status-badge status-ready">Ready</span></td>
+                                    <td>$25.00</td>
+                                    <td>
+                                        <button class="action-btn btn-view" onclick="viewOrder('LP2024-00154')">Track</button>
+                                        <button class="action-btn btn-edit" onclick="assignDriver('LP2024-00154')">Assign Driver</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#LP2024-00153</td>
+                                    <td>Emma Davis</td>
+                                    <td>Ironing</td>
+                                    <td><span class="status-badge status-picked">Picked Up</span></td>
+                                    <td>$12.00</td>
+                                    <td>
+                                        <button class="action-btn btn-view" onclick="viewOrder('LP2024-00153')">Track</button>
+                                        <button class="action-btn btn-edit" onclick="updateStatus('LP2024-00153')">Update</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Management Page -->
+            <div id="orders" class="page-content">
+                <div class="table-header">
+                    <h2>Orders Management</h2>
+                    <div>
+                        <button class="action-btn btn-process" onclick="filterOrders('all')">All</button>
+                        <button class="action-btn btn-view" onclick="filterOrders('pending')">Pending</button>
+                        <button class="action-btn" style="background: #17a2b8; color: white;" onclick="filterOrders('active')">Active</button>
+                        <button class="action-btn btn-edit" onclick="filterOrders('completed')">Completed</button>
+                        <button class="action-btn btn-cancel" onclick="filterOrders('cancelled')">Cancelled</button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Items</th>
+                                <th>Pickup Time</th>
+                                <th>Delivery Time</th>
+                                <th>Status</th>
+                                <th>Driver</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTable">
+                            <!-- Orders will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Drivers Management Page -->
+            <div id="drivers" class="page-content">
+                <div class="table-header">
+                    <h2>Driver Management</h2>
+                    <button class="action-btn btn-edit" onclick="openDriverModal()">+ Add Driver</button>
+                </div>
+                <div class="drivers-grid">
+                    <div class="driver-card">
+                        <div class="driver-info">
+                            <div class="driver-avatar">JD</div>
+                            <div>
+                                <h3>John Davis</h3>
+                                <p style="color: #666;">Vehicle: Van #LA-001</p>
+                                <span class="status-badge status-completed">Active</span>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <p><strong>Current Location:</strong> Downtown Area</p>
+                            <p><strong>Orders Today:</strong> 8 deliveries</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐⭐ 4.9</p>
+                        </div>
+                        <div>
+                            <button class="action-btn btn-view" onclick="viewDriverDetails('JD')">View</button>
+                            <button class="action-btn btn-edit" onclick="editDriver('JD')">Edit</button>
+                            <button class="action-btn" style="background: #6c757d; color: white;" onclick="messageDriver('JD')">Message</button>
+                        </div>
+                    </div>
+                    <div class="driver-card">
+                        <div class="driver-info">
+                            <div class="driver-avatar">MS</div>
+                            <div>
+                                <h3>Maria Smith</h3>
+                                <p style="color: #666;">Vehicle: Bike #LA-002</p>
+                                <span class="status-badge status-completed">Active</span>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <p><strong>Current Location:</strong> Uptown Area</p>
+                            <p><strong>Orders Today:</strong> 6 deliveries</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐ 4.7</p>
+                        </div>
+                        <div>
+                            <button class="action-btn btn-view" onclick="viewDriverDetails('MS')">View</button>
+                            <button class="action-btn btn-edit" onclick="editDriver('MS')">Edit</button>
+                            <button class="action-btn" style="background: #6c757d; color: white;" onclick="messageDriver('MS')">Message</button>
+                        </div>
+                    </div>
+                    <div class="driver-card">
+                        <div class="driver-info">
+                            <div class="driver-avatar">RW</div>
+                            <div>
+                                <h3>Robert Wilson</h3>
+                                <p style="color: #666;">Vehicle: Van #LA-003</p>
+                                <span class="status-badge" style="background: #e74c3c; color: white;">On Break</span>
+                            </div>
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <p><strong>Current Location:</strong> Facility</p>
+                            <p><strong>Orders Today:</strong> 4 deliveries</p>
+                            <p><strong>Rating:</strong> ⭐⭐⭐⭐ 4.5</p>
+                        </div>
+                        <div>
+                            <button class="action-btn btn-view" onclick="viewDriverDetails('RW')">View</button>
+                            <button class="action-btn btn-edit" onclick="editDriver('RW')">Edit</button>
+                            <button class="action-btn" style="background: #6c757d; color: white;" onclick="messageDriver('RW')">Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facility Management Page -->
+            <div id="facility" class="page-content">
+                <div class="table-header">
+                    <h2>Facility Management</h2>
+                    <button class="action-btn btn-edit" onclick="openMachineModal()">+ Add Machine</button>
+                </div>
+                
+                <div class="facility-card">
+                    <h3>Washing Machines</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div class="machine-status online">
+                            <strong>WM-001</strong>
+                            <span>45 mins remaining</span>
+                        </div>
+                        <div class="machine-status online">
+                            <strong>WM-002</strong>
+                            <span>15 mins remaining</span>
+                        </div>
+                        <div class="machine-status offline">
+                            <strong>WM-003</strong>
+                            <span>Maintenance</span>
+                        </div>
+                        <div class="machine-status online">
+                            <strong>WM-004</strong>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="facility-card">
+                    <h3>Dryers</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div class="machine-status online">
+                            <strong>DR-001</strong>
+                            <span>30 mins remaining</span>
+                        </div>
+                        <div class="machine-status online">
+                            <strong>DR-002</strong>
+                            <span>Available</span>
+                        </div>
+                        <div class="machine-status online">
+                            <strong>DR-003</strong>
+                            <span>Available</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="facility-card">
+                    <h3>Inventory Status</h3>
+                    <div style="margin-top: 15px;">
+                        <p><strong>Detergent:</strong> 85% remaining</p>
+                        <div style="height: 10px; background: #e0e0e0; border-radius: 5px; margin: 10px 0;">
+                            <div style="width: 85%; height: 100%; background: #28a745; border-radius: 5px;"></div>
+                        </div>
+                        <p><strong>Fabric Softener:</strong> 60% remaining</p>
+                        <div style="height: 10px; background: #e0e0e0; border-radius: 5px; margin: 10px 0;">
+                            <div style="width: 60%; height: 100%; background: #ffc107; border-radius: 5px;"></div>
+                        </div>
+                        <p><strong>Plastic Covers:</strong> 40% remaining</p>
+                        <div style="height: 10px; background: #e0e0e0; border-radius: 5px; margin: 10px 0;">
+                            <div style="width: 40%; height: 100%; background: #e74c3c; border-radius: 5px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Page -->
+            <div id="analytics" class="page-content">
+                <h2 style="margin-bottom: 20px;">Business Analytics</h2>
+                
+                <div class="analytics-grid" style="margin-bottom: 30px;">
+                    <div class="analytics-card">
+                        <p>Total Revenue</p>
+                        <div class="analytics-value">$24,580</div>
+                        <small style="color: #28a745;">↑ 15% this month</small>
+                    </div>
+                    <div class="analytics-card">
+                        <p>Avg Order Value</p>
+                        <div class="analytics-value">$28.50</div>
+                        <small style="color: #28a745;">↑ $2.50 from last month</small>
+                    </div>
+                    <div class="analytics-card">
+                        <p>Customer Retention</p>
+                        <div class="analytics-value">78%</div>
+                        <small style="color: #e74c3c;">↓ 2% from last month</small>
+                    </div>
+                    <div class="analytics-card">
+                        <p>Peak Hours</p>
+                        <div class="analytics-value">10 AM</div>
+                        <small>Most orders placed</small>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>Revenue by Service Type</h3>
+                    <canvas id="revenueChart" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- Customers Page -->
+            <div id="customers" class="page-content">
+                <div class="table-header">
+                    <h2>Customer Management</h2>
+                    <button class="action-btn btn-view" onclick="exportCustomers()">Export</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Orders</th>
+                                <th>Total Spent</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C001</td>
+                                <td>John Smith</td>
+                                <td>john@example.com</td>
+                                <td>+1 (555) 123-4567</td>
+                                <td>12</td>
+                                <td>$420</td>
+                                <td><span class="status-badge status-completed">Active</span></td>
+                                <td>
+                                    <button class="action-btn btn-view" onclick="viewCustomer('C001')">View</button>
+                                    <button class="action-btn" style="background: #6c757d; color: white;" onclick="messageCustomer('C001')">Message</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C002</td>
+                                <td>Sarah Johnson</td>
+                                <td>sarah@example.com</td>
+                                <td>+1 (555) 234-5678</td>
+                                <td>8</td>
+                                <td>$280</td>
+                                <td><span class="status-badge status-completed">Active</span></td>
+                                <td>
+                                    <button class="action-btn btn-view" onclick="viewCustomer('C002')">View</button>
+                                    <button class="action-btn" style="background: #6c757d; color: white;" onclick="messageCustomer('C002')">Message</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C003</td>
+                                <td>Mike Wilson</td>
+                                <td>mike@example.com</td>
+                                <td>+1 (555) 345-6789</td>
+                                <td>15</td>
+                                <td>$525</td>
+                                <td><span class="status-badge" style="background: #17a2b8; color: white;">Premium</span></td>
+                                <td>
+                                    <button class="action-btn btn-view" onclick="viewCustomer('C003')">View</button>
+                                    <button class="action-btn btn-edit" onclick="editCustomer('C003')">Edit</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Inventory Page -->
+            <div id="inventory" class="page-content">
+                <div class="table-header">
+                    <h2>Inventory Management</h2>
+                    <button class="action-btn btn-edit" onclick="openInventoryModal()">+ Add Item</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Min Level</th>
+                                <th>Status</th>
+                                <th>Last Restock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DET-001</td>
+                                <td>Premium Detergent</td>
+                                <td>Cleaning</td>
+                                <td>85 units</td>
+                                <td>20 units</td>
+                                <td><span class="status-badge status-completed">Good</span></td>
+                                <td>Dec 10, 2024</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="restockItem('DET-001')">Restock</button>
+                                    <button class="action-btn btn-view" onclick="viewItem('DET-001')">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>FS-002</td>
+                                <td>Fabric Softener</td>
+                                <td>Cleaning</td>
+                                <td>60 units</td>
+                                <td>25 units</td>
+                                <td><span class="status-badge" style="background: #ffc107; color: #000;">Warning</span></td>
+                                <td>Dec 5, 2024</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="restockItem('FS-002')">Restock</button>
+                                    <button class="action-btn btn-view" onclick="viewItem('FS-002')">View</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>PC-003</td>
+                                <td>Plastic Covers</td>
+                                <td>Packaging</td>
+                                <td>40 units</td>
+                                <td>50 units</td>
+                                <td><span class="status-badge status-cancelled">Low</span></td>
+                                <td>Nov 28, 2024</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="restockItem('PC-003')">Restock</button>
+                                    <button class="action-btn btn-view" onclick="viewItem('PC-003')">View</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notifications Page -->
+            <div id="notifications" class="page-content">
+                <div class="table-header">
+                    <h2>Notifications</h2>
+                    <button class="action-btn btn-cancel" onclick="clearNotifications()">Clear All</button>
+                </div>
+                <div class="notification-panel">
+                    <div class="notification-item">
+                        <div class="notification-icon notif-alert">⚠️</div>
+                        <div>
+                            <strong>Machine WM-003 requires maintenance</strong>
+                            <p>Washing machine has been flagged for service</p>
+                            <div class="notification-time">10 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon notif-info">📦</div>
+                        <div>
+                            <strong>Inventory running low: Plastic Covers</strong>
+                            <p>Only 40 units remaining (min: 50 units)</p>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon notif-success">💰</div>
+                        <div>
+                            <strong>New record: Daily revenue $2,150</strong>
+                            <p>Highest single day revenue achieved</p>
+                            <div class="notification-time">5 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings" class="page-content">
+                <h2 style="margin-bottom: 20px;">System Settings</h2>
+                <div class="chart-card">
+                    <div class="form-group">
+                        <label>Business Name</label>
+                        <input type="text" class="form-control" value="CleanPress Laundry Service">
+                    </div>
+                    <div class="form-group">
+                        <label>Service Hours</label>
+                        <input type="text" class="form-control" value="8:00 AM - 10:00 PM">
+                    </div>
+                    <div class="form-group">
+                        <label>Base Prices</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <input type="text" class="form-control" placeholder="Wash & Fold" value="$15">
+                            <input type="text" class="form-control" placeholder="Dry Clean" value="$25">
+                            <input type="text" class="form-control" placeholder="Express" value="$35">
+                            <input type="text" class="form-control" placeholder="Ironing" value="$12">
+                        </div>
+                    </div>
+                    <button class="action-btn btn-edit" style="width: 100%; padding: 12px;" onclick="saveSettings()">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Order Details: <span id="modalOrderId"></span></h3>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div id="modalContent">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Driver Modal -->
+    <div id="driverModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Driver</h3>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="form-group">
+                <label>Driver Name</label>
+                <input type="text" class="form-control" id="driverName" placeholder="Enter driver name">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" class="form-control" id="driverPhone" placeholder="+1 (555) 123-4567">
+            </div>
+            <div class="form-group">
+                <label>Vehicle Type</label>
+                <select class="form-control" id="driverVehicle">
+                    <option value="bike">Bike</option>
+                    <option value="scooter">Scooter</option>
+                    <option value="car">Car</option>
+                    <option value="van">Van</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Vehicle Number</label>
+                <input type="text" class="form-control" id="vehicleNumber" placeholder="LA-001">
+            </div>
+            <button class="action-btn btn-edit" style="width: 100%; padding: 12px;" onclick="saveDriver()">Save Driver</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample orders data
+        const orders = [
+            { id: 'LP2024-00156', customer: 'John Smith', service: 'Express', status: 'delivering', amount: 35, items: 5, pickup: '10:00 AM', delivery: '6:00 PM', driver: 'John Davis' },
+            { id: 'LP2024-00155', customer: 'Sarah Johnson', service: 'Wash & Fold', status: 'washing', amount: 15, items: 3, pickup: '9:30 AM', delivery: '5:30 PM', driver: 'Maria Smith' },
+            { id: 'LP2024-00154', customer: 'Mike Wilson', service: 'Dry Clean', status: 'ready', amount: 25, items: 4, pickup: '11:00 AM', delivery: '7:00 PM', driver: 'Robert Wilson' },
+            { id: 'LP2024-00153', customer: 'Emma Davis', service: 'Ironing', status: 'picked', amount: 12, items: 2, pickup: '8:30 AM', delivery: '4:30 PM', driver: 'John Davis' },
+            { id: 'LP2024-00152', customer: 'David Brown', service: 'Express', status: 'completed', amount: 35, items: 6, pickup: 'Yesterday', delivery: 'Yesterday', driver: 'Maria Smith' },
+            { id: 'LP2024-00151', customer: 'Lisa Taylor', service: 'Wash & Fold', status: 'drying', amount: 15, items: 4, pickup: 'Yesterday', delivery: 'Today', driver: 'John Davis' },
+            { id: 'LP2024-00150', customer: 'Tom Anderson', service: 'Dry Clean', status: 'pending', amount: 25, items: 3, pickup: 'Tomorrow', delivery: 'Tomorrow', driver: 'Not Assigned' },
+            { id: 'LP2024-00149', customer: 'Anna Clark', service: 'Ironing', status: 'cancelled', amount: 12, items: 2, pickup: 'Dec 14', delivery: 'Dec 14', driver: 'N/A' }
+        ];
+
+        let currentPage = 'dashboard';
+
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add active class to clicked nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item.textContent.includes(pageId.charAt(0).toUpperCase() + pageId.slice(1))) {
+                    item.classList.add('active');
+                }
+            });
+            
+            currentPage = pageId;
+            
+            // Load data for specific pages
+            if (pageId === 'orders') {
+                loadOrdersTable();
+            }
+        }
+
+        function loadOrdersTable() {
+            const table = document.getElementById('ordersTable');
+            table.innerHTML = '';
+            
+            orders.forEach(order => {
+                const statusClass = `status-${order.status}`;
+                const statusText = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>${order.customer}</td>
+                    <td>${order.service}</td>
+                    <td>${order.items} items</td>
+                    <td>${order.pickup}</td>
+                    <td>${order.delivery}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${order.driver}</td>
+                    <td>$${order.amount.toFixed(2)}</td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewOrder('${order.id}')">View</button>
+                        <button class="action-btn btn-edit" onclick="updateOrder('${order.id}')">Edit</button>
+                        ${order.status !== 'cancelled' && order.status !== 'completed' ? 
+                            `<button class="action-btn btn-process" onclick="processOrder('${order.id}')">Process</button>` : ''}
+                    </td>
+                `;
+                table.appendChild(row);
+            });
+        }
+
+        function filterOrders(status) {
+            alert(`Filtering orders by: ${status}`);
+            // In a real app, this would filter the orders table
+        }
+
+        function viewOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            document.getElementById('modalOrderId').textContent = `#${order.id}`;
+            
+            let modalContent = `
+                <div style="margin: 20px 0;">
+                    <p><strong>Customer:</strong> ${order.customer}</p>
+                    <p><strong>Service:</strong> ${order.service}</p>
+                    <p><strong>Items:</strong> ${order.items} laundry items</p>
+                    <p><strong>Pickup:</strong> ${order.pickup}</p>
+                    <p><strong>Delivery:</strong> ${order.delivery}</p>
+                    <p><strong>Driver:</strong> ${order.driver}</p>
+                    <p><strong>Amount:</strong> $${order.amount.toFixed(2)}</p>
+                    <p><strong>Status:</strong> <span class="status-badge status-${order.status}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></p>
+                </div>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4>Order Timeline</h4>
+                    <p>📅 Created: Dec 15, 2024 9:30 AM</p>
+                    <p>🚗 Assigned to driver: Dec 15, 2024 9:45 AM</p>
+                    <p>📦 Picked up: Dec 15, 2024 10:15 AM</p>
+                    <p>🧺 At facility: Dec 15, 2024 10:45 AM</p>
+                    ${order.status === 'completed' ? '<p>✅ Delivered: Dec 15, 2024 6:00 PM</p>' : '<p>⏳ Expected delivery: Today 6:00 PM</p>'}
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="action-btn btn-edit" style="flex: 1;" onclick="updateOrderStatus('${order.id}')">Update Status</button>
+                    <button class="action-btn" style="flex: 1; background: #6c757d; color: white;" onclick="messageCustomerFromOrder('${order.customer}')">Message Customer</button>
+                </div>
+            `;
+            
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('orderModal').classList.add('active');
+        }
+
+        function updateOrderStatus(orderId) {
+            const newStatus = prompt('Enter new status (pending, picked, washing, drying, ready, delivering, completed, cancelled):', 'completed');
+            if (newStatus) {
+                alert(`Order ${orderId} status updated to: ${newStatus}`);
+                closeModal();
+            }
+        }
+
+        function openDriverModal() {
+            document.getElementById('driverModal').classList.add('active');
+        }
+
+        function saveDriver() {
+            const name = document.getElementById('driverName').value;
+            const phone = document.getElementById('driverPhone').value;
+            const vehicle = document.getElementById('driverVehicle').value;
+            const vehicleNum = document.getElementById('vehicleNumber').value;
+            
+            if (name && phone && vehicleNum) {
+                alert(`Driver ${name} added successfully!\nPhone: ${phone}\nVehicle: ${vehicle} (${vehicleNum})`);
+                closeModal();
+                // Reset form
+                document.getElementById('driverName').value = '';
+                document.getElementById('driverPhone').value = '';
+                document.getElementById('vehicleNumber').value = '';
+            } else {
+                alert('Please fill all required fields');
+            }
+        }
+
+        function viewDriverDetails(driverId) {
+            alert(`Viewing details for driver: ${driverId}`);
+        }
+
+        function editDriver(driverId) {
+            alert(`Editing driver: ${driverId}`);
+        }
+
+        function messageDriver(driverId) {
+            const message = prompt(`Message to driver ${driverId}:`, 'Please check your assigned orders.');
+            if (message) {
+                alert(`Message sent to driver ${driverId}: "${message}"`);
+            }
+        }
+
+        function openMachineModal() {
+            alert('Add new machine functionality');
+        }
+
+        function viewCustomer(customerId) {
+            alert(`Viewing customer: ${customerId}`);
+        }
+
+        function editCustomer(customerId) {
+            alert(`Editing customer: ${customerId}`);
+        }
+
+        function messageCustomer(customerId) {
+            const message = prompt(`Message to customer ${customerId}:`, 'Thank you for choosing CleanPress!');
+            if (message) {
+                alert(`Message sent to customer ${customerId}: "${message}"`);
+            }
+        }
+
+        function messageCustomerFromOrder(customerName) {
+            const message = prompt(`Message to ${customerName}:`, 'Your order is on the way!');
+            if (message) {
+                alert(`Message sent to ${customerName}: "${message}"`);
+            }
+        }
+
+        function openInventoryModal() {
+            alert('Add inventory item functionality');
+        }
+
+        function restockItem(itemCode) {
+            const quantity = prompt(`Enter restock quantity for ${itemCode}:`, '50');
+            if (quantity && !isNaN(quantity)) {
+                alert(`${quantity} units added to ${itemCode}`);
+            }
+        }
+
+        function viewItem(itemCode) {
+            alert(`Viewing item: ${itemCode}`);
+        }
+
+        function clearNotifications() {
+            if (confirm('Clear all notifications?')) {
+                alert('All notifications cleared');
+            }
+        }
+
+        function exportCustomers() {
+            alert('Exporting customer data...');
+        }
+
+        function saveSettings() {
+            alert('Settings saved successfully!');
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal();
+            }
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            // Orders Chart
+            const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+            new Chart(ordersCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Orders',
+                        data: [32, 45, 38, 52, 47, 60, 55],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Service Chart
+            const serviceCtx = document.getElementById('serviceChart').getContext('2d');
+            new Chart(serviceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Wash & Fold', 'Dry Clean', 'Express', 'Ironing'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: [
+                            '#667eea',
+                            '#764ba2',
+                            '#28a745',
+                            '#ffc107'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: [12500, 14200, 16800, 19200, 21000, 24580],
+                        backgroundColor: '#667eea',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOrdersTable();
+            initializeCharts();
+        });
+    </script>
+</body>
+</html>
